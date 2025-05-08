@@ -81,13 +81,17 @@
     this.search = function(_object, sim) {
       if (wait_similars) this.find(sim[0].id);
     };
+	
+    function normalizeString(str) {
+      return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
 
     this.searchByTitle = function(_object, query) {
       var _this = this;
 
       object = _object;
       var year = parseInt((object.movie.release_date || object.movie.first_air_date || '0000').slice(0, 4));
-      var orig = object.movie.original_title || object.movie.original_name;
+      var orig = object.movie.original_name || object.movie.original_title;
       var url = api_url + 'search';
       url = Lampa.Utils.addUrlComponent(url, 'story=' + encodeURIComponent(query));
       url = Lampa.Utils.addUrlComponent(url, dev_token + fxapi_token);
@@ -98,14 +102,8 @@
           return c.year > year - 2 && c.year < year + 2;
         });
         var card = cards.find(function(c) {
-          return c.year == year;
+          return c.year == year && normalizeString(c.original_title) == normalizeString(orig);
         });
-
-        if (!card) {
-          card = cards.find(function(c) {
-            return c.original_title == orig;
-          });
-        }
 
         if (!card && cards.length == 1) card = cards[0];
         if (card) _this.find(card.id);
@@ -534,7 +532,7 @@
     this.find = function() {
       if (source.searchByTitle) {
         this.extendChoice();
-        source.searchByTitle(object, object.search || object.movie.title || object.movie.name);
+        source.searchByTitle(object, object.search || object.movie.original_title || object.movie.original_name || object.movie.title || object.movie.name);
       }
     };
 
@@ -1255,7 +1253,7 @@
     window.online_filmix = true;
     var manifest = {
       type: 'video',
-      version: '1.0.2',
+      version: '1.0.3',
       name: 'Онлайн - Filmix',
       description: 'Плагин для просмотра онлайн сериалов и фильмов',
       component: 'online_fxapi',
