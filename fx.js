@@ -83,7 +83,7 @@
     };
 	
     function normalizeString(str) {
-      return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return str.toLowerCase().replace(/[^a-zа-я0-9]/g, '');
     }
 
     this.searchByTitle = function(_object, query) {
