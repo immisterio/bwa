@@ -13,6 +13,10 @@
   var dev_token = 'user_dev_apk=2.0.1&user_dev_id=' + unic_id + '&user_dev_name=Lampa&user_dev_os=11&user_dev_vendor=FXAPI&user_dev_token=';
   var modalopen = false;
   var ping_auth;
+  
+  function toProxy(url) {
+	  return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url)
+  }
 
   function fxapi(component, _object) {
     var network = new Lampa.Reguest();
@@ -51,7 +55,7 @@
       ping_auth = setInterval(function() {
         network.clear();
         network.timeout(8000);
-        network.silent(Lampa.Utils.addUrlComponent(api_url + 'user_profile', dev_token + user_token), function(json) {
+        network.silent(toProxy(Lampa.Utils.addUrlComponent(api_url + 'user_profile', dev_token + user_token)), function(json) {
           if (json && json.user_data) {
             Lampa.Modal.close();
             clearInterval(ping_auth);
@@ -96,7 +100,7 @@
       url = Lampa.Utils.addUrlComponent(url, 'story=' + encodeURIComponent(query));
       url = Lampa.Utils.addUrlComponent(url, dev_token + fxapi_token);
       network.clear();
-      network.silent(url, function(json) {
+      network.silent(toProxy(url), function(json) {
         var cards = json.filter(function(c) {
           c.year = parseInt(c.alt_name.split('-').pop());
           return c.year > year - 2 && c.year < year + 2;
@@ -118,14 +122,14 @@
     };
 
     this.find = function(filmix_id) {
-      var url = proxy_url + api_url;
+      var url = api_url;
 
       end_search(filmix_id);
 
       function end_search(filmix_id) {
         network.clear();
         network.timeout(10000);
-        network.silent(url + 'post/' + filmix_id + '?' + dev_token + fxapi_token, function(found) {
+        network.silent(toProxy(url + 'post/' + filmix_id + '?' + dev_token + fxapi_token), function(found) {
           if (found && Object.keys(found).length) {
             success(found);
             component.loading(false);
@@ -1421,7 +1425,7 @@
     function checkToken(token) {
       var network = new Lampa.Reguest();
       network.timeout(8000);
-      network.silent(Lampa.Utils.addUrlComponent(api_url + 'user_profile', dev_token + token), function(json) {
+      network.silent(toProxy(Lampa.Utils.addUrlComponent(api_url + 'user_profile', dev_token + token)), function(json) {
         if (json) {
           if (json.user_data) {
             if (json.user_data.is_pro) window.fxapi.max_qualitie = 1080;
