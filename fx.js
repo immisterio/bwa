@@ -35,12 +35,14 @@
       var modal = $('<div><div class="broadcast__text">' + Lampa.Lang.translate('modal_text') + '</div><div class="broadcast__device selector" style="text-align: center; background-color: darkslategrey; color: white;">' + Lampa.Lang.translate('modal_wait') + '...</div><br><div class="broadcast__scan"><div></div></div></div></div>');
 		
 		function openModal(){
+			var contrl = Lampa.Controller.enabled().name
 			Lampa.Modal.open({
 	        title: '',
 	        html: modal,
 	        onBack: function onBack() {
 	          Lampa.Modal.close();
 	          clearInterval(ping_auth);
+			  Lampa.Controller.toggle(contrl)
 	        },
 	        onSelect: function onSelect() {
 	          Lampa.Utils.copyTextToClipboard(user_code, function() {
