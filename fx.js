@@ -53,10 +53,8 @@
 	        }
 	      });
 		}
-		openModal()
+
       ping_auth = setInterval(function() {
-        network.clear();
-        network.timeout(8000);
         network.silent(Lampa.Utils.addUrlComponent(api_url + 'user_profile', dev_token + user_token), function(json) {
           if (json && json.user_data) {
             Lampa.Modal.close();
@@ -65,9 +63,8 @@
             window.location.reload();
           }
         }, function(a, c) {});
-      }, 4000);
-      network.clear();
-      network.timeout(8000);
+      }, 2000);
+		
       network.quiet(Lampa.Utils.addUrlComponent(api_url + 'token_request', dev_token), function(found) {
         if (found.status == 'ok') {
           user_token = found.code;
