@@ -33,21 +33,25 @@
 	  modalopen = true;
 
       var modal = $('<div><div class="broadcast__text">' + Lampa.Lang.translate('modal_text') + '</div><div class="broadcast__device selector" style="text-align: center; background-color: darkslategrey; color: white;">' + Lampa.Lang.translate('modal_wait') + '...</div><br><div class="broadcast__scan"><div></div></div></div></div>');
-      Lampa.Modal.open({
-        title: '',
-        html: modal,
-        onBack: function onBack() {
-          Lampa.Modal.close();
-          clearInterval(ping_auth);
-        },
-        onSelect: function onSelect() {
-          Lampa.Utils.copyTextToClipboard(user_code, function() {
-            Lampa.Noty.show(Lampa.Lang.translate('copy_secuses'));
-          }, function() {
-            Lampa.Noty.show(Lampa.Lang.translate('copy_fail'));
-          });
-        }
-      });
+		
+		function openModal(){
+			Lampa.Modal.open({
+	        title: '',
+	        html: modal,
+	        onBack: function onBack() {
+	          Lampa.Modal.close();
+	          clearInterval(ping_auth);
+	        },
+	        onSelect: function onSelect() {
+	          Lampa.Utils.copyTextToClipboard(user_code, function() {
+	            Lampa.Noty.show(Lampa.Lang.translate('copy_secuses'));
+	          }, function() {
+	            Lampa.Noty.show(Lampa.Lang.translate('copy_fail'));
+	          });
+	        }
+	      });
+		}
+		openModal()
       ping_auth = setInterval(function() {
         network.clear();
         network.timeout(8000);
@@ -67,6 +71,7 @@
           user_token = found.code;
           user_code = found.user_code;
           modal.find('.selector').text(user_code);
+		  if(!$('.modal').length) openModal()
         } else {
           Lampa.Noty.show(found);
         }
@@ -1253,7 +1258,7 @@
     window.online_filmix = true;
     var manifest = {
       type: 'video',
-      version: '1.0.3',
+      version: '1.0.4',
       name: 'Онлайн - Filmix',
       description: 'Плагин для просмотра онлайн сериалов и фильмов',
       component: 'online_fxapi',
